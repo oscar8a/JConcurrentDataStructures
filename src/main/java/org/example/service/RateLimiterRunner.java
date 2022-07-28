@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class RateLimiterRunner {
-    private static final RateLimiter RATE_LIMITER = RateLimiter.create(10); // 10 permits available per second
+    private static final RateLimiter RATE_LIMITER = RateLimiter.create(5); // 10 permits available per second
     public static void main(String[] args) throws InterruptedException {
         /*
          * So here's what's going on in the RateLimiterRunner.
@@ -65,7 +65,11 @@ public class RateLimiterRunner {
     }
 
     private static void examineNumber(String num) {
-        RATE_LIMITER.acquire();
+        try {
+            RATE_LIMITER.acquire();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         System.out.println(LocalTime.now().truncatedTo(ChronoUnit.SECONDS) + ": " + num);
     }
 
