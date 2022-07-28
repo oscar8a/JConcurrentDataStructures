@@ -25,17 +25,16 @@ public class RateLimiter {
      * Else, wait.
      */
     public void acquire(int count) throws InterruptedException {
-//        System.out.println("Available permits S=> " + semaphore.availablePermits());
+        // Acquire permit
         semaphore.acquire(count);
-//        Date date = new Date();
-//        date.setSeconds(date.getSeconds() + 5);
+
+        // Create a TamerTask to run with a 1 second delay to RELEASE the permit
         t.schedule(new TimerTask() {
             @Override
             public void run() {
                 semaphore.release(count);
             }
         }, 1000);
-//        System.out.println("Available permits E=> " + semaphore.availablePermits());
     }
 
     /**
@@ -43,6 +42,7 @@ public class RateLimiter {
      * Else, wait.
      */
     public void acquire() throws InterruptedException {
+            // Call to use 1 permit
             this.acquire(1);
     }
 }
